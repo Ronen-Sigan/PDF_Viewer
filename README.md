@@ -15,3 +15,24 @@ There are a few easy ways to get the `PDF_viewer.html` file onto your mobile dev
 The file is usually downloaded to the devices **Downloads** folder. Once the file is on your phone, use a file manager app (like the built-in "Files" app on iOS or Google's "Files" app on Android) to locate `PDF_viewer.html`. Tapping on the file should open it directly in your phone's web browser, and you will see the `PDF_viewer.html` ready to use.
 ### 3. Click on the _**Choose PDF File**_ button:
 Select the PDF file you want to view.
+
+# License
+This repo links to a script that has the following license:
+@licstart The following is the entire license notice for the Javascript code in this page:
+ *
+ * Copyright 2021 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @licend The above is the entire license notice for the
+ * Javascript code in this page
