@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple PDF Viewer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f3f4f6;
+            padding: 1rem;
+        }
+        canvas {
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full flex flex-col items-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Simple PDF Viewer</h1>
+        <p class="text-sm text-gray-600 mb-4 text-center">Select a PDF file to view it in your browser.</p>
+
+        <!-- File Input -->
+        <label for="pdf-file-input" class="w-full">
+            <input type="file" id="pdf-file-input" accept=".pdf" class="hidden">
+            <span class="cursor-pointer w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-200 block text-center">
+                Choose PDF File
+            </span>
+        </label>
+
+        <!-- PDF Canvas Container -->
+        <div id="canvas-container" class="mt-4 w-full flex justify-center">
+            <canvas id="pdf-canvas"></canvas>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex items-center space-x-4 mt-4 w-full justify-center">
+            <button id="prev-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-200">
+                Previous
+            </button>
+            <span id="page-info" class="text-gray-700 font-medium">Page: -/-</span>
+            <button id="next-btn" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-200">
+                Next
+            </button>
+        </div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+
+        const fileInput = document.getElementById('pdf-file-input');
+        const canvas = document.getElementById('pdf-canvas');
+        const context = canvas.getContext('2d');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageInfo = document.getElementById('page-info');
+
+        let pdfDoc = null;
+        let pageNum = 1;
+
+        // Function to render a specific page of the PDF
+        const renderPage = (num) => {
+            if (!pdfDoc) return;
+
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale: 1.5 });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+
+                page.render(renderContext).promise.then(() => {
+                    pageInfo.textContent = `Page: ${pageNum} / ${pdfDoc.numPages}`;
+                });
+            });
+        };
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const fileReader = new FileReader();
+            fileReader.onload = () => {
+                const typedArray = new Uint8Array(fileReader.result);
+                pdfjsLib.getDocument(typedArray).promise.then(pdf => {
+                    pdfDoc = pdf;
+                    pageNum = 1;
+                    renderPage(pageNum);
+                    prevBtn.disabled = pageNum <= 1;
+                    nextBtn.disabled = pageNum >= pdfDoc.numPages;
+                }).catch(error => {
+                    console.error("Error loading PDF:", error);
+                    alert("Failed to load PDF file.");
+                });
+            };
+            fileReader.readAsArrayBuffer(file);
+        });
+
+        // Handle previous page button click
+        prevBtn.addEventListener('click', () => {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            renderPage(pageNum);
+            prevBtn.disabled = pageNum <= 1;
+            nextBtn.disabled = pageNum >= pdfDoc.numPages;
+        });
+
+        // Handle next page button click
+        nextBtn.addEventListener('click', () => {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            renderPage(pageNum);
+            prevBtn.disabled = pageNum <= 1;
+            nextBtn.disabled = pageNum >= pdfDoc.numPages;
+        });
+
+    </script>
+</body>
+</html>
