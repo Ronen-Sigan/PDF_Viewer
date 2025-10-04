@@ -1,5 +1,5 @@
 # PDF Viewer for Android or iPhone
-A free and simple way to view PDF files on your smartphone or PC. 
+A free and simple way to view PDF files on your smartphone or PC without downloading anything (via the first option described in the readme).
 ## The simplest way to use it:
 **Just to click on this **[link](https://ronen-sigan.github.io/PDF_Viewer/)** that opens the viewer online and enables you to immediately use it. Click on the _**Choose PDF File**_ button and select the PDF file you want to view.**<BR><BR>
 ![alt text](https://github.com/Ronen-Sigan/PDF_Viewer/blob/main/pdf.png?raw=true)
